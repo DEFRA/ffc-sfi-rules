@@ -34,6 +34,42 @@ const optionalActionsDetails = {
   }
 }
 
+const landFeaturesContent = {
+  'improved-grassland': {
+    label: 'Improved grassland'
+  },
+  'unimproved-grassland': {
+    label: 'Semi-improved and unimproved grassland'
+  },
+  arable: {
+    label: 'Arable and horticultural land'
+  },
+  hedgerows: {
+    label: 'Hedgerows'
+  },
+  'waterbody-buffers': {
+    label: 'Waterbody buffers'
+  },
+  woodland: {
+    label: 'Farm woodland over 15 years old'
+  }
+}
+
+const landFeatureCategoriesContent = {
+  grassland: {
+    label: 'Grassland'
+  },
+  arable: {
+    label: 'Arable/horticultural land'
+  },
+  boundary: {
+    label: 'Boundary features'
+  },
+  woodland: {
+    label: 'On farm woodland'
+  }
+}
+
 const standardsContent = {
   'improved-grassland': {
     title: 'Improved grassland',
@@ -136,10 +172,11 @@ module.exports = {
   // Used by land-calc.js
   getLandFeatureCategories: () => Object.entries(landFeatureCategories).map(([id, category]) => ({
     id,
-    label: category.label,
+    label: landFeatureCategoriesContent[id].label,
     features: category.features.map(categoryId => ({
       id: categoryId,
-      ...landFeatures[categoryId]
+      label: landFeaturesContent[categoryId].label,
+      unit: landFeatures[categoryId].unit
     }))
   })),
   // Used by select-std.js
@@ -160,7 +197,7 @@ module.exports = {
   // Used by sfi-summary.js
   getFundingBreakdown: () => Object.entries(landFeatureCategories).map(([id, category]) => ({
     id,
-    label: category.label,
+    label: landFeatureCategoriesContent[id].label,
     descriptionHtml: (values) => fundingSummary.getFundingBreakdown(id, values),
     standards: category.features.map(f => landFeatures[f].standards.map(s => ({
       id: s,

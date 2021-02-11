@@ -1,33 +1,28 @@
-// FIXME: remove label from landFeatures and landFeatyreCategories
+// FIXME:
+// 2. put unit with rates and use that unit in content e.g. m2
 
 const landFeatures = {
   'improved-grassland': {
-    label: 'Improved grassland',
     unit: 'ha',
     standards: ['improved-grassland', 'improved-grassland-soils']
   },
   'unimproved-grassland': {
-    label: 'Semi-improved and unimproved grassland',
     unit: 'ha',
     standards: ['unimproved-grassland']
   },
   arable: {
-    label: 'Arable and horticultural land',
     unit: 'ha',
     standards: ['arable', 'arable-soils']
   },
   hedgerows: {
-    label: 'Hedgerows',
     unit: 'ha',
     standards: ['hedgerows']
   },
   'waterbody-buffers': {
-    label: 'Waterbody buffers',
     unit: 'ha',
     standards: ['waterbody-buffers']
   },
   woodland: {
-    label: 'Farm woodland over 15 years old',
     unit: 'ha',
     standards: ['woodland']
   }
@@ -35,19 +30,15 @@ const landFeatures = {
 
 const landFeatureCategories = {
   grassland: {
-    label: 'Grassland',
     features: ['improved-grassland', 'unimproved-grassland']
   },
   arable: {
-    label: 'Arable/horticultural land',
     features: ['arable']
   },
   boundary: {
-    label: 'Boundary features',
     features: ['hedgerows', 'waterbody-buffers']
   },
   woodland: {
-    label: 'On farm woodland',
     features: ['woodland']
   }
 }
