@@ -1,8 +1,9 @@
 const stdDescription = require('./content-std-description')
 const fundingSummary = require('./content-funding-summary')
-const { landFeatureCategories, landFeatures, standardsRates, standards } = require('./standards')
+const { landFeatureCategories, landFeatures, standards, optionalActions } = require('./scheme') // FIXME replace this
+const scheme = require('./scheme')
 
-const optionalActions = {
+const optionalActionsDetails = {
   'improved-grassland0': {
     label: (amount) => `${amount} trees with a buffer around`,
     standard: 'improved-grassland'
@@ -73,7 +74,7 @@ const extraActions = {
     hint: 'Add the number of trees on your improved grassland you want to maintain a 10 metre radius buffer around. You can leave this blank if you don\'t know.',
     actions: [{
       id: 'improved-grassland0',
-      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${standardsRates['improved-grassland'].optional[0]} for each tree you maintain a buffer around</strong>.</p>`,
+      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${optionalActions['improved-grassland0'].landRate} for each tree you maintain a buffer around</strong>.</p>`,
       label: 'Number of trees',
       unit: 'trees'
     }]
@@ -82,13 +83,13 @@ const extraActions = {
     hint: 'Add how many hectares you want to use for each action. You can leave fields blank if you don\'t know.',
     actions: [{
       id: 'improved-grassland-soils0',
-      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${standardsRates['improved-grassland-soils'].optional[0]} a hectare</strong> to reduce stocking density or remove livestock from wet soils.</p>`,
+      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${optionalActions['improved-grassland-soils0'].landRate} a hectare</strong> to reduce stocking density or remove livestock from wet soils.</p>`,
       label: 'Number of hectares',
       unit: 'ha'
     },
     {
       id: 'improved-grassland-soils1',
-      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${standardsRates['improved-grassland-soils'].optional[1]} a hectare</strong> to maintain permanent grassland that you only re-seed by direct drilling or over-sowing.</p>`,
+      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${optionalActions['improved-grassland-soils1'].landRate} a hectare</strong> to maintain permanent grassland that you only re-seed by direct drilling or over-sowing.</p>`,
       label: 'Number of hectares',
       unit: 'ha'
     }]
@@ -97,7 +98,7 @@ const extraActions = {
     hint: 'Add the number of trees on your arable land you want to maintain a 10 metre radius buffer around. You can leave this blank if you don\'t know.',
     actions: [{
       id: 'arable0',
-      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${standardsRates.arable.optional[0]} for each tree you maintain a buffer around</strong>.</p>`,
+      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${optionalActions.arable0.landRate} for each tree you maintain a buffer around</strong>.</p>`,
       label: 'Number of trees',
       unit: 'trees'
     }]
@@ -106,7 +107,7 @@ const extraActions = {
     hint: 'Add the number of hectares of arable land at risk of surface runoff, soil erosion or flooding you want to establish green cover on. You can leave this blank if you don\'t know.',
     actions: [{
       id: 'arable-soils0',
-      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${standardsRates['arable-soils'].optional[0]} a hectare</strong> to establish green cover.</p>`,
+      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${optionalActions['arable-soils0'].landRate} a hectare</strong> to establish green cover.</p>`,
       label: 'Number of hectares',
       unit: 'ha'
     }]
@@ -115,7 +116,7 @@ const extraActions = {
     hint: 'Add the number of square meters of cultivated land you want to establish in-field grass strips or blocks on to intercept runoff water. You can leave this blank if you don\'t know.',
     actions: [{
       id: 'waterbody-buffers0',
-      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${standardsRates['waterbody-buffers'].optional[0]} a square meter</strong> to establish in-field grass strips or blocks.</p>`,
+      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${optionalActions['waterbody-buffers0'].landRate} a square meter</strong> to establish in-field grass strips or blocks.</p>`,
       label: 'Number of square meters',
       unit: 'm<sup>2</sup>'
     }]
@@ -124,7 +125,7 @@ const extraActions = {
     hint: 'Add the number of square meters of newly planted woodland under 15 years old you want to maintain. You can leave this blank if you don\'t know.',
     actions: [{
       id: 'woodland0',
-      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${standardsRates.woodland.optional[0]} a hectare</strong> to maintain newly planted woodland.</p>`,
+      preHtml: `<p class="govuk-body govuk-!-margin-top-6">We’ll pay you <strong>£${optionalActions.woodland0.landRate} a hectare</strong> to maintain newly planted woodland.</p>`,
       label: 'Number of square meters',
       unit: 'm<sup>2</sup>'
     }]
@@ -144,7 +145,7 @@ module.exports = {
   // Used by select-std.js
   getStandards: () => Object.entries(standardsContent).map(([id, standard]) => ({
     id,
-    descriptionHtml: stdDescription(id, [standardsRates[id].mandatory, standardsRates[id].optional].flat()),
+    descriptionHtml: stdDescription(id, scheme.getRates()[id]),
     landFeature: Object.entries(landFeatures).find(([k, v]) => v.standards.includes(id))[0],
     ...standard
   })),
@@ -163,11 +164,12 @@ module.exports = {
     descriptionHtml: (values) => fundingSummary.getFundingBreakdown(id, values),
     standards: category.features.map(f => landFeatures[f].standards.map(s => ({
       id: s,
+      title: standardsContent[s].title,
       ...standards[s]
     }))).flat(),
     extraActions: category.features.map(f => landFeatures[f].standards.map(s => standards[s].optionalActions.map(a => ({
       id: a,
-      ...optionalActions[a]
+      ...optionalActionsDetails[a]
     })))).flat(2)
   }))
 }
