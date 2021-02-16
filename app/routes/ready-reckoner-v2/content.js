@@ -3,34 +3,29 @@ const fundingSummary = require('./content-funding-summary')
 const { landFeatureCategories, landFeatures, standards, optionalActions } = require('./scheme') // FIXME replace this
 const scheme = require('./scheme')
 
+const schemeRates = scheme.getRates()
+
 const optionalActionsDetails = {
   'improved-grassland0': {
-    label: (amount) => `${amount} trees with a buffer around`,
-    standard: 'improved-grassland'
+    label: (amount) => `${amount} trees with a buffer around`
   },
   'improved-grassland-soils0': {
-    label: (amount) => `${amount} hectares with reduced or removed livestock`,
-    standard: 'improved-grassland-soils'
+    label: (amount) => `${amount} hectares with reduced or removed livestock`
   },
   'improved-grassland-soils1': {
-    label: (amount) => `${amount} hectares of permanent grassland`,
-    standard: 'improved-grassland-soils'
+    label: (amount) => `${amount} hectares of permanent grassland`
   },
   arable0: {
-    label: (amount) => `${amount} trees with a buffer around`,
-    standard: 'arable'
+    label: (amount) => `${amount} trees with a buffer around`
   },
   'arable-soils0': {
-    label: (amount) => `${amount} hectares of green cover`,
-    standard: 'arable-soils'
+    label: (amount) => `${amount} hectares of green cover`
   },
   woodland0: {
-    label: (amount) => `${amount} square metres of newly planted woodland`,
-    standard: 'woodland'
+    label: (amount) => `${amount} square metres of newly planted woodland`
   },
   'waterbody-buffers0': {
-    label: (amount) => `${amount} square metres of in-field grass strips or blocks`,
-    standard: 'waterbody-buffers'
+    label: (amount) => `${amount} square metres of in-field grass strips or blocks`
   }
 }
 
@@ -182,7 +177,7 @@ module.exports = {
   // Used by select-std.js
   getStandards: () => Object.entries(standardsContent).map(([id, standard]) => ({
     id,
-    descriptionHtml: stdDescription(id, scheme.getRates()[id]),
+    descriptionHtml: stdDescription(id, schemeRates[id]),
     landFeature: Object.entries(landFeatures).find(([k, v]) => v.standards.includes(id))[0],
     ...standard
   })),
@@ -206,7 +201,8 @@ module.exports = {
     }))).flat(),
     extraActions: category.features.map(f => landFeatures[f].standards.map(s => standards[s].optionalActions.map(a => ({
       id: a,
-      ...optionalActionsDetails[a]
+      label: optionalActionsDetails[a].label,
+      standard: scheme.getStandardIdFromOptionId(a)
     })))).flat(2)
   }))
 }

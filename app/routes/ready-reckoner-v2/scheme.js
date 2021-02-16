@@ -139,5 +139,6 @@ module.exports = {
   getStandards,
   getLandFeatures,
   getLandCategories,
-  getRates
+  getRates,
+  getStandardIdFromOptionId: (optionId) => Object.entries(standards).find(([id, s]) => s.optionalActions.includes(optionId))[0]
 }
