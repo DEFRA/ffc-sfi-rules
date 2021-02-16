@@ -74,31 +74,24 @@ const standards = {
 
 const optionalActions = {
   'improved-grassland0': {
-    landRate: 3,
     additionalPayments: {}
   },
   'improved-grassland-soils0': {
-    landRate: 88,
     additionalPayments: {}
   },
   'improved-grassland-soils1': {
-    landRate: 56,
     additionalPayments: {}
   },
   arable0: {
-    landRate: 13,
     additionalPayments: {}
   },
   'arable-soils0': {
-    landRate: 114,
     additionalPayments: {}
   },
   'waterbody-buffers0': {
-    landRate: 0.05,
     additionalPayments: {}
   },
   woodland0: {
-    landRate: 200,
     additionalPayments: {
       webinar: 25,
       assessment: 100
@@ -127,7 +120,10 @@ function getRates () {
   return Object.entries(standards).reduce((acc, [standardId, standard]) => {
     acc[standardId] = {
       landRate: standardsV2.find(s => s.id === standardId).paymentRate,
-      optionalActions: standard.optionalActions.map(actionId => optionalActions[actionId])
+      optionalActions: standard.optionalActions.map(actionId => ({
+        landRate: standardsV2.find(s => s.id === standardId).optionalActions.find(a => a.id === actionId).paymentRate,
+        additionalPayments: optionalActions[actionId].additionalPayments
+      }))
     }
 
     return acc
