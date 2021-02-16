@@ -1,3 +1,5 @@
+const standardsV2 = require('../../services/standards-v2')
+
 // FIXME:
 // 2. put unit with rates and use that unit in content e.g. m2
 
@@ -43,72 +45,29 @@ const landFeatureCategories = {
   }
 }
 
-const standardsRates = {
-  arable: {
-    mandatory: 28,
-    optional: [13]
-  },
-  'arable-soils': {
-    mandatory: 30,
-    optional: [114]
-  },
-  'improved-grassland': {
-    mandatory: 27,
-    optional: [3]
-  },
-  'improved-grassland-soils': {
-    mandatory: 6,
-    optional: [88, 56]
-  },
-  'unimproved-grassland': {
-    mandatory: 22,
-    optional: []
-  },
-  hedgerows: {
-    mandatory: 200,
-    optional: []
-  },
-  'waterbody-buffers': {
-    mandatory: 200,
-    optional: [0.05]
-  },
-  woodland: {
-    mandatory: 49,
-    optional: [200, 25, 100]
-  }
-}
-
 const standards = {
   arable: {
-    title: 'Arable and horticultural land',
     optionalActions: ['arable0']
   },
   'arable-soils': {
-    title: 'Arable and horticultural soils',
     optionalActions: ['arable-soils0']
   },
   'improved-grassland': {
-    landRate: 27,
     optionalActions: ['improved-grassland0']
   },
   'improved-grassland-soils': {
-    landRate: 6,
     optionalActions: ['improved-grassland-soils0', 'improved-grassland-soils1']
   },
   'unimproved-grassland': {
-    landRate: 22,
     optionalActions: []
   },
   hedgerows: {
-    landRate: 200,
     optionalActions: []
   },
   'waterbody-buffers': {
-    landRate: 200,
     optionalActions: ['waterbody-buffers0']
   },
   woodland: {
-    landRate: 49,
     optionalActions: ['woodland0']
   }
 }
@@ -167,7 +126,7 @@ function getRates () {
   // Return the standard and action rates
   return Object.entries(standards).reduce((acc, [standardId, standard]) => {
     acc[standardId] = {
-      landRate: standard.landRate,
+      landRate: standardsV2.find(s => s.id === standardId).paymentRate,
       optionalActions: standard.optionalActions.map(actionId => optionalActions[actionId])
     }
 

@@ -5,7 +5,6 @@ const content = require('./content')
 const { log } = require('../../services/logger')
 const scheme = require('./scheme')
 const session = require('./session-handler')
-const standards = require('./standards')
 const standardsV2 = require('../../services/standards-v2')
 
 function tableRowContent (col1Text, col2Text, linkAddress) {
@@ -134,7 +133,6 @@ module.exports = [
     method: 'GET',
     path: pageDetails.path,
     handler: async (request, h) => {
-      // FIXME: is there a nicer way of doing this?
       pageDetails.backPath = 'javascript:history.go(-1)'
 
       const correlationId = session.getValue(request, session.keys.correlationId)
@@ -169,7 +167,7 @@ module.exports = [
               categoryAmounts[id].payment += paymentAmounts.standards[standard].base
             }
 
-            standards.standards[standard].optionalActions.forEach(
+            scheme.standards[standard].optionalActions.forEach(
               action => (categoryAmounts[id].paymentOptional += paymentAmounts.standards[standard].optional[action])
             )
           })
