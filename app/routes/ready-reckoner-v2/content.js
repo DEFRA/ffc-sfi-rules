@@ -3,6 +3,8 @@ const fundingSummary = require('./content-funding-summary')
 const { landFeatureCategories, landFeatures, standards, optionalActions } = require('./scheme') // FIXME replace this
 const scheme = require('./scheme')
 
+// FIXME: it makes more sense to structure this as per shared content and bespoke content per view
+
 const schemeRates = scheme.getRates()
 
 const optionalActionsDetails = {
@@ -100,6 +102,8 @@ const standardsContent = {
   }
 }
 
+// FIXME: id and unit can come from standardsV2 or scheme
+// FIXME: landRate in schemeRates
 const extraActions = {
   'improved-grassland': {
     hint: 'Add the number of trees on your improved grassland you want to maintain a 10 metre radius buffer around. You can leave this blank if you don\'t know.',
@@ -163,6 +167,7 @@ const extraActions = {
   }
 }
 
+// FIXME: name the get functions after their route label
 module.exports = {
   // Used by land-calc.js
   getLandFeatureCategories: () => Object.entries(landFeatureCategories).map(([id, category]) => ({

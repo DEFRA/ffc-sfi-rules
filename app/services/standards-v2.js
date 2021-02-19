@@ -4,7 +4,7 @@ module.exports = [{
     condition: 'true',
     expression: 'inputValue * paymentRate'
   }],
-  landType: 'arable', // assume landtype is a 1-to-1 with standard
+  landType: 'arable',
   optionalActions: [{
     id: 'arable0',
     calculations: [{

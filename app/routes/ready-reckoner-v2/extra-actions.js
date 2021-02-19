@@ -2,6 +2,7 @@ const Joi = require('joi')
 
 const content = require('./content')
 const session = require('./session-handler')
+const scheme = require('./scheme')
 const { logError } = require('../../services/logger')
 
 const pageDetails = {
@@ -49,10 +50,7 @@ module.exports = [
       const selectedStandards = session.getValue(request, session.keys.selectedStandards)
 
       // If there aren't any actions for the selected standard then redirect to the next page
-      // FIXME: I need to know what the extra actions are before content rendering
-      // so that we can redirect if there are no extra actions to show
-      // asking for the content here is ugly, data should be got from elsewhere
-      if (!content.getExtraActions().find(a => selectedStandards.includes(a.id))) {
+      if (!Object.values(scheme.getOptionalActionsToStandardsMapping()).find(std => selectedStandards.includes(std))) {
         return h.redirect(pageDetails.nextPath)
       }
 

@@ -45,6 +45,7 @@ const landFeatureCategories = {
   }
 }
 
+// FIXME: this info is all in standardsV2
 const standards = {
   arable: {
     optionalActions: ['arable0']
@@ -72,6 +73,7 @@ const standards = {
   }
 }
 
+// FIXME: rename to optionalActionsAdditionalPayments
 const optionalActions = {
   'improved-grassland0': {
     additionalPayments: {}
@@ -97,6 +99,14 @@ const optionalActions = {
       assessment: 100
     }
   }
+}
+
+function getOptionalActionsToStandardsMapping () {
+  return standardsV2.reduce((acc, cur) => {
+    // Assuming optional action ids are unique, which they should be
+    cur.optionalActions.forEach(a => (acc[a.id] = cur.id))
+    return acc
+  }, {})
 }
 
 function getOptionalActions () {
@@ -140,5 +150,6 @@ module.exports = {
   getLandFeatures,
   getLandCategories,
   getRates,
-  getStandardIdFromOptionId: (optionId) => Object.entries(standards).find(([id, s]) => s.optionalActions.includes(optionId))[0]
+  getStandardIdFromOptionId: (optionId) => Object.entries(standards).find(([id, s]) => s.optionalActions.includes(optionId))[0],
+  getOptionalActionsToStandardsMapping
 }
