@@ -3,8 +3,8 @@ const Wreck = require('@hapi/wreck')
 const { agreementServiceBaseUrl } = require('../../config/general')
 const content = require('./content')
 const { log } = require('../../services/logger')
+const scheme = require('./scheme')
 const session = require('./session-handler')
-const standards = require('./standards')
 const standardsV2 = require('../../services/standards-v2')
 
 function tableRowContent (col1Text, col2Text, linkAddress) {
@@ -133,11 +133,13 @@ module.exports = [
     method: 'GET',
     path: pageDetails.path,
     handler: async (request, h) => {
-      // FIXME: is there a nicer way of doing this?
       pageDetails.backPath = 'javascript:history.go(-1)'
 
       const correlationId = session.getValue(request, session.keys.correlationId)
       const url = `${agreementServiceBaseUrl}/value?correlationId=${correlationId}`
+      console.log('****')
+      console.log(`HITTING this: ${url}`)
+      console.log('****')
       const { payload } = await Wreck.get(url, { json: true })
       log('msg response', payload)
 
@@ -149,8 +151,8 @@ module.exports = [
       const bpsPayment = session.getValue(request, session.keys.bpsPayment)
       const paymentAmounts = doPaymentCalculations(payload.body, bpsPayment)
 
-      const landFeatures = standards.landFeatures
-      const landFeatureCategories = standards.landFeatureCategories
+      const landFeatures = scheme.landFeatures
+      const landFeatureCategories = scheme.landFeatureCategories
       const categoryAmounts = {}
 
       Object.entries(landFeatureCategories).forEach(([id, category]) => {
@@ -168,7 +170,7 @@ module.exports = [
               categoryAmounts[id].payment += paymentAmounts.standards[standard].base
             }
 
-            standards.standards[standard].optionalActions.forEach(
+            scheme.standards[standard].optionalActions.forEach(
               action => (categoryAmounts[id].paymentOptional += paymentAmounts.standards[standard].optional[action])
             )
           })

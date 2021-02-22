@@ -1,6 +1,6 @@
 {
   "name": "ffc-sfi-frontend",
-  "version": "1.21.0",
+  "version": "1.22.0",
   "description": "Frontend microservice SFI",
   "homepage": "https://github.com/DEFRA/ffc-sfi-frontend",
   "main": "app/index.js",
